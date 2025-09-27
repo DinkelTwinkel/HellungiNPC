@@ -21,9 +21,9 @@ const sushiConveyor = require('./patterns/sushiConveyor');
 // When the client is ready, run this code (only once)
 // We use 'c' for the event parameter to keep it separate from the already defined 'client'
 
-const registerCommands = require ('./registerCommands');
-// const campfireVCs = require('./patterns/campfireVCs');
-registerCommands;
+// const registerCommands = require ('./registerCommands');
+// // const campfireVCs = require('./patterns/campfireVCs');
+// registerCommands;
 
 client.once(Events.ClientReady, async c => {
 

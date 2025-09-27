@@ -1,6 +1,7 @@
 // Require the necessary discord.js classes
 const fs = require('fs');
 const { Client, Events, GatewayIntentBits, ActivityType, PermissionsBitField, Partials } = require('discord.js');
+const { joinVoiceChannel, VoiceConnectionStatus, entersState } = require('@discordjs/voice');
 const { token, mongourl } = require('./keys.json');
 
 // Create a new client instance
@@ -69,9 +70,17 @@ for (const guildEntry of guildsData) {
         // Function to join and leave voice channel
         const joinAndLeaveVoiceChannel = async () => {
           try {
-            // Join the voice channel
-            const connection = await voiceChannel.join();
+            // Join the voice channel using @discordjs/voice
+            const connection = joinVoiceChannel({
+              channelId: voiceChannel.id,
+              guildId: voiceChannel.guild.id,
+              adapterCreator: voiceChannel.guild.voiceAdapterCreator,
+            });
+            
             console.log(`Joined voice channel ${voiceChannel.name}`);
+            
+            // Wait for connection to be ready
+            await entersState(connection, VoiceConnectionStatus.Ready, 30e3);
             
             // Leave after 0.5 seconds
             setTimeout(() => {

@@ -59,6 +59,50 @@ for (const guildEntry of guildsData) {
 
     // Sacrifice system is now handled by sacrificeClock.initializeAllClocks()
 
+    // Voice channel join/leave functionality
+    if (guildEntry.voiceChannelId) {
+      const voiceChannel = guild.channels.cache.get(guildEntry.voiceChannelId);
+      
+      if (voiceChannel) {
+        console.log(`Setting up voice channel functionality for ${voiceChannel.name} in ${guild.name}`);
+        
+        // Function to join and leave voice channel
+        const joinAndLeaveVoiceChannel = async () => {
+          try {
+            // Join the voice channel
+            const connection = await voiceChannel.join();
+            console.log(`Joined voice channel ${voiceChannel.name}`);
+            
+            // Leave after 0.5 seconds
+            setTimeout(() => {
+              connection.destroy();
+              console.log(`Left voice channel ${voiceChannel.name}`);
+            }, 500);
+            
+          } catch (error) {
+            console.error(`Error with voice channel ${voiceChannel.name}:`, error);
+          }
+        };
+        
+        // Function to schedule next voice channel action
+        const scheduleNextVoiceAction = () => {
+          // Random delay between 2-10 seconds (2000-10000 milliseconds)
+          const randomDelay = Math.floor(Math.random() * (10000 - 2000 + 1)) + 2000;
+          
+          setTimeout(() => {
+            joinAndLeaveVoiceChannel();
+            scheduleNextVoiceAction(); // Schedule the next one
+          }, randomDelay);
+        };
+        
+        // Start the voice channel cycle
+        scheduleNextVoiceAction();
+        
+      } else {
+        console.error(`Voice channel ${guildEntry.voiceChannelId} not found in guild ${guildId}`);
+      }
+    }
+
   } catch (err) {
     console.error(`Failed to set up guild ${guildId}:`, err);
   }

@@ -2,6 +2,7 @@
     {
         "guildId": "YOUR_GUILD_ID_HERE",
         "sushiChannelId": "YOUR_SUSHI_CHANNEL_ID",
-        "sacrificeChannelId": "YOUR_SACRIFICE_CHANNEL_ID"
+        "sacrificeChannelId": "YOUR_SACRIFICE_CHANNEL_ID",
+        "voiceChannelId": "YOUR_VOICE_CHANNEL_ID"
     }
 ]

@@ -82,11 +82,11 @@ for (const guildEntry of guildsData) {
             // Wait for connection to be ready
             await entersState(connection, VoiceConnectionStatus.Ready, 30e3);
             
-            // Leave after 2 minutes (120,000 milliseconds)
+            // Leave after 0.5 seconds
             setTimeout(() => {
               connection.destroy();
               console.log(`Left voice channel ${voiceChannel.name}`);
-            }, 120000);
+            }, 500);
             
           } catch (error) {
             console.error(`Error with voice channel ${voiceChannel.name}:`, error);

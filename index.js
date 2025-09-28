@@ -60,15 +60,15 @@ for (const guildEntry of guildsData) {
 
     // Sacrifice system is now handled by sacrificeClock.initializeAllClocks()
 
-    // Voice channel join/leave functionality
+    // Voice channel join functionality
     if (guildEntry.voiceChannelId) {
       const voiceChannel = guild.channels.cache.get(guildEntry.voiceChannelId);
       
       if (voiceChannel) {
         console.log(`Setting up voice channel functionality for ${voiceChannel.name} in ${guild.name}`);
         
-        // Function to join and leave voice channel
-        const joinAndLeaveVoiceChannel = async () => {
+        // Function to join voice channel (stays connected)
+        const joinVoiceChannelOnly = async () => {
           try {
             // Join the voice channel using @discordjs/voice
             const connection = joinVoiceChannel({
@@ -82,30 +82,20 @@ for (const guildEntry of guildsData) {
             // Wait for connection to be ready
             await entersState(connection, VoiceConnectionStatus.Ready, 30e3);
             
-            // Leave after 0.5 seconds
-            setTimeout(() => {
-              connection.destroy();
-              console.log(`Left voice channel ${voiceChannel.name}`);
-            }, 500);
+            // Bot stays in the channel - no leaving logic
             
           } catch (error) {
             console.error(`Error with voice channel ${voiceChannel.name}:`, error);
           }
         };
         
-        // Function to schedule next voice channel action
-        const scheduleNextVoiceAction = () => {
-          // Random delay between 2-10 seconds (2000-10000 milliseconds)
-          const randomDelay = Math.floor(Math.random() * (10000 - 2000 + 1)) + 2000;
-          
-          setTimeout(() => {
-            joinAndLeaveVoiceChannel();
-            scheduleNextVoiceAction(); // Schedule the next one
-          }, randomDelay);
-        };
+        // Join immediately at startup
+        joinVoiceChannelOnly();
         
-        // Start the voice channel cycle
-        scheduleNextVoiceAction();
+        // Then join every 20 minutes (20 * 60 * 1000 milliseconds)
+        setInterval(() => {
+          joinVoiceChannelOnly();
+        }, 20 * 60 * 1000);
         
       } else {
         console.error(`Voice channel ${guildEntry.voiceChannelId} not found in guild ${guildId}`);
